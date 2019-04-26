@@ -147,8 +147,10 @@ setMethod("map_colors", signature=c("IntensityColorPlane"),
               full_range <- range(x@intensity, na.rm=TRUE)
               irange <- c(max(irange[1], full_range[1]), min(irange[2], full_range[2]))
               icol <- as.integer((x@intensity - irange[1])/diff(irange) * (length(x@colmap) -1) + 1)
+              icol[is.na(icol)] <- 1
               icol[icol < 1] <- 1
               icol[icol > length(x@colmap)] <- length(x@colmap)
+             
               clrs <- x@colmap[icol]
             }
             
