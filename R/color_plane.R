@@ -141,10 +141,10 @@ setMethod("map_colors", signature=c("IntensityColorPlane"),
           def=function(x, alpha=1, threshold=NULL, irange=NULL) {
             #browser()
             if (is.null(irange)) {
-              irange <- range(x@intensity)
+              irange <- range(x@intensity, na.rm=TRUE)
               clrs <- x@colmap[as.integer((x@intensity - irange[1])/ diff(irange) * (length(x@colmap) -1) + 1)]
             } else {
-              full_range <- range(x@intensity)
+              full_range <- range(x@intensity, na.rm=TRUE)
               irange <- c(max(irange[1], full_range[1]), min(irange[2], full_range[2]))
               icol <- as.integer((x@intensity - irange[1])/diff(irange) * (length(x@colmap) -1) + 1)
               icol[icol < 1] <- 1
