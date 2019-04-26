@@ -10,6 +10,35 @@ IntensityColorPlane <- function(intensity, cols=rainbow(255), alpha=1) {
   new("IntensityColorPlane", intensity=intensity, colmap=cols, alpha=alpha)
 }
 
+#' DiscreteColorPlane constructor
+#' 
+#' @param the discrete values of the color map
+#' @param lookup a "lookup table", whcih is a named list mapping discrete values to hex colors
+#' @param alpha
+#' @export
+DiscreteColorPlane <- function(values, lookup=NULL, alpha=1, cmap=rainbow(length(unique(values[!is.na(values)]))) {
+  values <- as.integer(values)
+  if (is.null(lookup)) {
+    valid_vals <- values[!is.na(values)]
+    
+    nuniq <- length(unique(valid_vals))
+    uvals <- sort(unique(valid_vals))
+    
+    if (is.null(cmap)) {
+      cmap <- rainbow(nuniq)
+    }
+    
+    names(cmap) <- as.character(uvals)
+    lookup <- as.list(cmap)
+  } 
+  
+  cols <- lookup[as.character(values)]
+  cols[sapply(cols, is.null)] <- "#00000000"
+  
+  new("DiscreteColorPlane", values=values, cols=cols, alpha=alpha)
+}
+
+
 #' RGBColorPlane constructor
 #' @export
 RGBColorPlane <- function(clrs) {
@@ -135,23 +164,28 @@ setMethod("map_colors", signature=c("ConstantColorPlane"),
             new("HexColorPlane", clrs=x@clrs)
           })
 
-
+setMethod("map_colors", signature=c("DiscreteColorPlane"),
+          def=function(x, ...) {
+            x@cols
+          })
+          
+          
 #' @export
 setMethod("map_colors", signature=c("IntensityColorPlane"),
           def=function(x, alpha=1, threshold=NULL, irange=NULL) {
-            #browser()
             if (is.null(irange)) {
               irange <- range(x@intensity, na.rm=TRUE)
               clrs <- x@colmap[as.integer((x@intensity - irange[1])/ diff(irange) * (length(x@colmap) -1) + 1)]
+              clrs[is.na(clrs)] <- "#00000000"
             } else {
               full_range <- range(x@intensity, na.rm=TRUE)
               irange <- c(max(irange[1], full_range[1]), min(irange[2], full_range[2]))
               icol <- as.integer((x@intensity - irange[1])/diff(irange) * (length(x@colmap) -1) + 1)
-              icol[is.na(icol)] <- 1
               icol[icol < 1] <- 1
               icol[icol > length(x@colmap)] <- length(x@colmap)
-             
               clrs <- x@colmap[icol]
+              clrs[is.na(icol)] <- "#00000000"
+              clrs
             }
             
             if (!is.null(threshold)) {

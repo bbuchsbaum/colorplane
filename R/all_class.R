@@ -7,6 +7,17 @@ setClass("BaseColorPlane")
 setClass("IntensityColorPlane",
          representation(intensity="numeric", alpha="numeric", colmap="character"), contains="BaseColorPlane")
 
+
+#' @slot values a vector of discrete integer values
+#' @slot lookup a lookup table mapping values to hex colors
+#' @slot alpha a vector of alpha values 
+#' @export
+setClass("DiscreteColorPlane",
+         representation(values="integer", lookup="list", alpha="numeric"), contains="BaseColorPlane")
+
+
+
+
 #' @slot clrs a field of colors
 #' @export
 setClass("ColorPlane", representation(clrs="ANY"), contains="BaseColorPlane")
