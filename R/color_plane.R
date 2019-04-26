@@ -16,7 +16,7 @@ IntensityColorPlane <- function(intensity, cols=rainbow(255), alpha=1) {
 #' @param lookup a "lookup table", whcih is a named list mapping discrete values to hex colors
 #' @param alpha
 #' @export
-DiscreteColorPlane <- function(values, lookup=NULL, alpha=1, cmap=rainbow(length(unique(values[!is.na(values)]))) {
+DiscreteColorPlane <- function(values, lookup=NULL, alpha=1, cmap=rainbow(length(unique(values[!is.na(values)])))) {
   values <- as.integer(values)
   if (is.null(lookup)) {
     valid_vals <- values[!is.na(values)]
