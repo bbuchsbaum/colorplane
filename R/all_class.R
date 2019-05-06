@@ -33,3 +33,12 @@ setClass("RGBColorPlane", representation(clrs="matrix"), contains="ColorPlane")
 #' @inheritParams ColorPlane
 #' @export
 setClass("ConstantColorPlane", representation(clrs="character"), contains="ColorPlane")
+
+#' @param irange the intensity range of the scale
+#' @param threshold the alpha thresholding range
+#' @param clrs a vector of hex colors
+#' @export
+setClass("ColorScale", representation(irange="numeric", threshold="numeric", clrs="character"))
+
+
+
