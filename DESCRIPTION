@@ -13,3 +13,4 @@ Collate:
     'all_class.R'
     'all_generic.R'
     'color_plane.R'
+    'color_scale.R'

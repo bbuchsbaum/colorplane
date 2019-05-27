@@ -13,8 +13,8 @@ IntensityColorPlane <- function(intensity, cols=rainbow(255), alpha=1) {
 #' DiscreteColorPlane constructor
 #' 
 #' @param the discrete values of the color map
-#' @param lookup a "lookup table", whcih is a named list mapping discrete values to hex colors
-#' @param alpha
+#' @param lookup a "lookup table", which is a named list mapping discrete values to hex colors
+#' @param alpha a value from 0 to 1 indicating transparency level
 #' @export
 DiscreteColorPlane <- function(values, lookup=NULL, alpha=1, cmap=rainbow(length(unique(values[!is.na(values)])))) {
   values <- as.integer(values)
