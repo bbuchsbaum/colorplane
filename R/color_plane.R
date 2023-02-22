@@ -29,6 +29,7 @@ IntensityColorPlane <- function(intensity, cols=rainbow(255), alpha=1) {
 #' @param cmap a hex color vector
 #' @importFrom methods new
 #' @export
+#' @rdname DiscreteColorPlane-class
 DiscreteColorPlane <- function(values, lookup=NULL, alpha=1, cmap=rainbow(length(unique(values[!is.na(values)])))) {
   values <- as.integer(values)
   if (is.null(lookup)) {
@@ -54,8 +55,10 @@ DiscreteColorPlane <- function(values, lookup=NULL, alpha=1, cmap=rainbow(length
 #' RGBColorPlane
 #'
 #' RGBColorPlane constructor
+#'
 #' @param clr a field of colors
 #' @export
+#' @rdname RGBColorPlane-class
 RGBColorPlane <- function(clr) {
   stopifnot(is.matrix(clr))
   if (ncol(clr) == 3) {
@@ -75,7 +78,7 @@ RGBColorPlane <- function(clr) {
 #'
 #' @param clr a single hex color as a `character` vector
 #' @export
-#' @rdname ConstColorPlane-class
+#' @rdname ConstantColorPlane-class
 ConstantColorPlane <- function(clr) {
   stopifnot(is.character(clr))
   new("ConstantColorPlane", clr=clr)

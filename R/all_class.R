@@ -3,7 +3,7 @@ setClass("BaseColorPlane")
 
 #' IntensityColorPlane
 #'
-#' a map of intensities to colors
+#' An association of intensities and colors
 #'
 #' @slot intensity a vector of intensity values
 #' @slot alpha a vector of alpha values
@@ -27,10 +27,10 @@ setClass("DiscreteColorPlane",
 
 
 
-#' BaseColorPlane
+#' ColorPlane
 #'
 #' @slot clr a field of colors
-#' @rdname BaseColorPlane
+#' @rdname ColorPlane-class
 setClass("ColorPlane", representation(clr="ANY"), contains="BaseColorPlane")
 
 

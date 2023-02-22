@@ -3,9 +3,9 @@
 \docType{class}
 \name{ColorPlane-class}
 \alias{ColorPlane-class}
-\title{BaseColorPlane}
+\title{ColorPlane}
 \description{
-BaseColorPlane
+ColorPlane
 }
 \section{Slots}{
 
