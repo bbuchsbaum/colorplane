@@ -2,9 +2,12 @@
 % Please edit documentation in R/color_plane.R
 \name{RGBColorPlane}
 \alias{RGBColorPlane}
-\title{RGBColorPlane constructor}
+\title{RGBColorPlane}
 \usage{
-RGBColorPlane(clrs)
+RGBColorPlane(clr)
+}
+\arguments{
+\item{clr}{a field of colors}
 }
 \description{
 RGBColorPlane constructor

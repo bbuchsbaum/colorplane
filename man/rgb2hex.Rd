@@ -6,6 +6,15 @@
 \usage{
 rgb2hex(r, g, b, alpha)
 }
+\arguments{
+\item{r}{the red color component}
+
+\item{g}{the green color component}
+
+\item{b}{the blue color component}
+
+\item{alpha}{the alpha component}
+}
 \description{
 convert rgb colors to hex colors
 }

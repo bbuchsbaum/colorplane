@@ -14,5 +14,5 @@ get_color(x, v, ...)
 \item{...}{extra args}
 }
 \description{
-get_color associated with one or more values
+get the color associated with one or more values
 }

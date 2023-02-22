@@ -2,9 +2,12 @@
 % Please edit documentation in R/color_plane.R
 \name{ConstantColorPlane}
 \alias{ConstantColorPlane}
-\title{ConstantColorPlane constructor}
+\title{ConstantColorPlane}
 \usage{
 ConstantColorPlane(clr)
+}
+\arguments{
+\item{clr}{a single hex color as a `character` vector}
 }
 \description{
 ConstantColorPlane constructor
