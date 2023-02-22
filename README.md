@@ -8,7 +8,11 @@
 [![R-CMD-check](https://github.com/bbuchsbaum/colorplane/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bbuchsbaum/colorplane/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of colorplane is to …
+The goal of `colorplane` is to facilitate the creation and manipulation
+of color maps that can be rescaled, thresholded, and blended. The main
+motivation for the package was to help with the creation of image
+overlays for the display of scalar fields on a backgroound image
+(e.g. for display of brain activation maps).
 
 ## Installation
 
@@ -22,36 +26,40 @@ devtools::install_github("bbuchsbaum/colorplane")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+We create two color planes that map from “intensity” to colors provided
+in a color map.
 
 ``` r
 library(colorplane)
-## basic example code
+
+vals <- rnorm(100)
+cmap <- IntensityColorPlane(vals, cols=rainbow(100))
+
+## now we map to a set of colors, such that the color scale ranges from -1 to 1.
+hexmap <- map_colors(cmap, irange=c(-1,1))
+print(class(hexmap))
+#> [1] "HexColorPlane"
+#> attr(,"package")
+#> [1] "colorplane"
+plot(vals, col=hexmap@clr)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+<img src="man/figures/README-example-1.png" width="100%" />
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+
+## let's do the same except threshold colors in the range [-.5,.5]
+cmap2 <- map_colors(cmap, irange=c(-1,1), threshold=c(-.5,.5))
+
+## cmap2 is an RGBColorPlane because we added element-wise transparency due to thresholding. 
+## We can convert back to hexcolors to plot.
+print(class(cmap2))
+#> [1] "RGBColorPlane"
+#> attr(,"package")
+#> [1] "colorplane"
+
+## Note value between [-.5,.5] are now invisible.
+plot(vals, col=as_hexcol(cmap2))
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+<img src="man/figures/README-example-2.png" width="100%" />

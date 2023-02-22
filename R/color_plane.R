@@ -235,6 +235,7 @@ setMethod("map_colors", signature=c("DiscreteColorPlane"),
 #' @param irange the intensity range defining min and max of scale.
 setMethod("map_colors", signature=c("IntensityColorPlane"),
           def=function(x, alpha=1, threshold=NULL, irange=NULL) {
+            assertthat::assert_that(alpha >=0 && alpha <= 1)
             if (is.null(irange)) {
               irange <- range(x@intensity, na.rm=TRUE)
               clr <- x@colmap[as.integer((x@intensity - irange[1])/ diff(irange) * (length(x@colmap) -1) + 1)]
@@ -255,7 +256,9 @@ setMethod("map_colors", signature=c("IntensityColorPlane"),
 
             if (!is.null(threshold)) {
               clr <- col2rgb(clr, alpha=TRUE)
-              clr[4,] <- clr[4,] * (alpha/255)
+              if (alpha < 1) {
+                clr[4,] <- clr[4,] * alpha
+              }
               if (length(threshold) == 1) {
                 trans <- x@intensity < threshold
                 clr[4,trans] <- 0
