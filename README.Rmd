@@ -59,7 +59,7 @@ plot(vals, col=as_hexcol(cmap2))
 
 ```
 
-We can also blend colors using alpha compisition. Here we simply give all colors a greenish tint to demonstrate color blending.
+We can also blend colors using alpha composition. Here we simply give all colors a greenish tint to demonstrate color blending.
 
 ```{r example2}
 

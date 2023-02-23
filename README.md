@@ -65,7 +65,7 @@ plot(vals, col=as_hexcol(cmap2))
 
 <img src="man/figures/README-example-2.png" width="100%" />
 
-We can also blend colors using alpha compisition. Here we simply give
+We can also blend colors using alpha composition. Here we simply give
 all colors a greenish tint to demonstrate color blending.
 
 ``` r
