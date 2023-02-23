@@ -1,6 +1,6 @@
 Package: colorplane
 Type: Package
-Title: Basic S4 Classes and Methods for Mapping Between nNumeric Values and Colors
+Title: Basic S4 Classes and Methods for Mapping Between Numeric Values and Colors
 Version: 0.5.0
 Date: 2023-02-18
 Encoding: UTF-8
