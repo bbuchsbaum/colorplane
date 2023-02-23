@@ -5,6 +5,7 @@
 \alias{blend_colors,ColorPlane,ColorPlane,numeric-method}
 \alias{blend_colors,ColorPlane,ColorPlane,missing-method}
 \alias{blend_colors,HexColorPlane,RGBColorPlane,numeric-method}
+\alias{blend_colors,HexColorPlane,ConstantColorPlane,numeric-method}
 \title{blend two color planes}
 \usage{
 blend_colors(bottom, top, alpha)
@@ -14,6 +15,8 @@ blend_colors(bottom, top, alpha)
 \S4method{blend_colors}{ColorPlane,ColorPlane,missing}(bottom, top)
 
 \S4method{blend_colors}{HexColorPlane,RGBColorPlane,numeric}(bottom, top, alpha)
+
+\S4method{blend_colors}{HexColorPlane,ConstantColorPlane,numeric}(bottom, top, alpha = 0.5)
 }
 \arguments{
 \item{bottom}{the bottom color plane}

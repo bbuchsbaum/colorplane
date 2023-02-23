@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/bbuchsbaum/colorplane/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bbuchsbaum/colorplane/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 The goal of `colorplane` is to facilitate the creation and manipulation
@@ -63,3 +64,20 @@ plot(vals, col=as_hexcol(cmap2))
 ```
 
 <img src="man/figures/README-example-2.png" width="100%" />
+
+We can also blend colors using alpha compisition. Here we simply give
+all colors a greenish tint to demonstrate color blending.
+
+``` r
+
+library(colorplane)
+
+vals <- rnorm(100) 
+bottom <- map_colors(IntensityColorPlane(vals, cols=rainbow(100)),irange=c(-1,1))
+top <- ConstantColorPlane("#00FF00") 
+
+blend <- blend_colors(bottom, top, alpha=.5)
+plot(vals, col=as_hexcol(blend))
+```
+
+<img src="man/figures/README-example2-1.png" width="100%" />

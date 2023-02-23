@@ -16,7 +16,9 @@ knitr::opts_chunk$set(
 # colorplane
 
 <!-- badges: start -->
+
 [![R-CMD-check](https://github.com/bbuchsbaum/colorplane/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bbuchsbaum/colorplane/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 The goal of `colorplane` is to facilitate the creation and manipulation of color maps that can be rescaled, thresholded, and blended. The main motivation for the package was to help with the creation of image overlays for the display of scalar fields on a backgroound image (e.g. for display of brain activation maps).
@@ -57,3 +59,17 @@ plot(vals, col=as_hexcol(cmap2))
 
 ```
 
+We can also blend colors using alpha compisition. Here we simply give all colors a greenish tint to demonstrate color blending.
+
+```{r example2}
+
+library(colorplane)
+
+vals <- rnorm(100) 
+bottom <- map_colors(IntensityColorPlane(vals, cols=rainbow(100)),irange=c(-1,1))
+top <- ConstantColorPlane("#00FF00") 
+
+blend <- blend_colors(bottom, top, alpha=.5)
+plot(vals, col=as_hexcol(blend))
+
+```

@@ -146,6 +146,19 @@ setMethod("blend_colors", signature(bottom="HexColorPlane", top="RGBColorPlane",
             RGBColorPlane(clr)
           })
 
+#' @export
+#' @rdname blend_colors-methods
+setMethod("blend_colors", signature(bottom="HexColorPlane", top="ConstantColorPlane", alpha="numeric"),
+          def=function(bottom, top, alpha=.5) {
+            bottom <- as_rgb(bottom)
+
+            alpha <- alpha_channel(top) * alpha
+            ## multiple constant alpha with alpha channel of top level
+            topclr <- as_rgb(top)
+            clr <- (1-alpha)*bottom[,1:3,drop=FALSE] + matrix(rep(alpha,nrow(bottom)), nrow(bottom)) %*% topclr[,1:3,drop=FALSE]
+            RGBColorPlane(clr)
+          })
+
 
 #' @export
 #' @rdname color-conversion
@@ -156,6 +169,12 @@ setMethod("as_rgb", signature(x="RGBColorPlane"),
 #' @rdname color-conversion
 setMethod("as_rgb", signature(x="HexColorPlane"),
           def=function(x) t(col2rgb(x@clr, alpha=TRUE)))
+
+#' @export
+#' @rdname color-conversion
+setMethod("as_rgb", signature(x="ConstantColorPlane"),
+          def=function(x) t(col2rgb(x@clr, alpha=TRUE)))
+
 
 #' @export
 #' @rdname color-conversion

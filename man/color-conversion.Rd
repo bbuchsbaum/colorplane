@@ -5,6 +5,7 @@
 \alias{as_hexcol}
 \alias{as_rgb,RGBColorPlane-method}
 \alias{as_rgb,HexColorPlane-method}
+\alias{as_rgb,ConstantColorPlane-method}
 \alias{as_hexcol,RGBColorPlane-method}
 \alias{as_hexcol,HexColorPlane-method}
 \title{convert to rgb colors}
@@ -16,6 +17,8 @@ as_hexcol(x, ...)
 \S4method{as_rgb}{RGBColorPlane}(x)
 
 \S4method{as_rgb}{HexColorPlane}(x)
+
+\S4method{as_rgb}{ConstantColorPlane}(x)
 
 \S4method{as_hexcol}{RGBColorPlane}(x)
 

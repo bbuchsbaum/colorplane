@@ -16,7 +16,7 @@ IntensityColorPlane(intensity, cols = rainbow(255), alpha = 1)
 \item{alpha}{a vector of alpha values ranging from 0 to 1}
 }
 \description{
-a map of intensities to colors
+An association of intensities and colors
 
 IntensityColorPlane constructor
 }
