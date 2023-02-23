@@ -1,7 +1,7 @@
 Package: colorplane
 Type: Package
 Title: Basic S4 classes and methods for mapping between numeric values and colors
-Version: 1.0
+Version: 0.5.0
 Date: 2023-02-18
 Encoding: UTF-8
 Authors@R: c(
