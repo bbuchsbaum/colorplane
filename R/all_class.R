@@ -17,13 +17,11 @@ setClass("IntensityColorPlane",
 
 #' DiscreteColorPlane
 #'
-#' @slot values a vector of discrete integer values
 #' @slot lookup a lookup table mapping values to hex colors
-#' @slot alpha a vector of alpha values
 #' @export
 #' @rdname DiscreteColorPlane-class
 setClass("DiscreteColorPlane",
-         representation(values="integer", lookup="list", alpha="numeric"), contains="BaseColorPlane")
+         representation(lookup="list"), contains="BaseColorPlane")
 
 
 
@@ -34,6 +32,8 @@ setClass("DiscreteColorPlane",
 setClass("ColorPlane", representation(clr="ANY"), contains="BaseColorPlane")
 
 
+#' HexColorPlane
+#'
 #' @inheritParams ColorPlane
 #' @export
 #' @rdname HexColorPlane-class

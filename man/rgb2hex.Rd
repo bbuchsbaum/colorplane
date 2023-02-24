@@ -15,6 +15,9 @@ rgb2hex(r, g, b, alpha)
 
 \item{alpha}{the alpha component}
 }
+\value{
+a hex color represenation as `character` vector
+}
 \description{
 convert rgb colors to hex colors
 }

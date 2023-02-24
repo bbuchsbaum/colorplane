@@ -9,10 +9,13 @@
 ConstantColorPlane(clr)
 }
 \arguments{
-\item{clr}{a single hex color as a `character` vector}
+\item{clr}{a single hex color as a `character` vector of length 1 defining the constant color.}
+}
+\value{
+a new \code{\linkS4class{ConstantColorPlane}} instance
 }
 \description{
-ConstantColorPlane constructor
+ConstantColorPlane constructor taking a single hex `character` vector defining a constant color plane.
 }
 \section{Slots}{
 

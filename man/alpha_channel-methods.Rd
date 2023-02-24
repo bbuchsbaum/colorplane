@@ -22,6 +22,9 @@ alpha_channel(x, ...)
 
 \item{normalize}{divide by 255}
 }
+\value{
+a numeric vector of alpha channel values
+}
 \description{
 extract the alpha channel
 }

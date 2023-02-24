@@ -9,8 +9,21 @@
 RGBColorPlane(clr)
 }
 \arguments{
-\item{clr}{a field of colors}
+\item{clr}{a matrix of colors where the first column is red, second column is green, third column is blue, and optional fourth column is alpha.}
+}
+\value{
+a new \code{\linkS4class{RGBColorPlane}} instance
 }
 \description{
-RGBColorPlane constructor
+RGBColorPlane constructor taking a 3- or 4-column numeric \code{matrix} of RGB(A) colors in the 0-255 range.
+}
+\examples{
+
+rgba_cmat <- rbind(c(255,0,0,255),
+              c(0, 255, 0, 255),
+              c(0, 0, 255, 0))
+
+cp <- RGBColorPlane(rgba_cmat)
+stopifnot(all(cp@clr[1,] == c(255,0,0,255)))
+
 }

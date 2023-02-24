@@ -9,8 +9,11 @@
 HexColorPlane(clr)
 }
 \arguments{
-\item{clr}{a field of colors}
+\item{clr}{a vector of hex colors}
+}
+\value{
+a new \code{\linkS4class{HexColorPlane}} instance
 }
 \description{
-HexColorPlane constructor
+HexColorPlane constructor taking a `character` vector of colors to define a color plane.
 }

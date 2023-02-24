@@ -16,6 +16,9 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/news/index.html</loc>
+  </url>
+  <url>
     <loc>/reference/BaseColorPlane.html</loc>
   </url>
   <url>
@@ -52,7 +55,16 @@
     <loc>/reference/alpha_channel-methods.html</loc>
   </url>
   <url>
+    <loc>/reference/as_hexcol-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/as_rgb-methods.html</loc>
+  </url>
+  <url>
     <loc>/reference/blend_colors-methods.html</loc>
+  </url>
+  <url>
+    <loc>/reference/col2hex.html</loc>
   </url>
   <url>
     <loc>/reference/color-conversion.html</loc>

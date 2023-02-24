@@ -14,6 +14,8 @@ NULL
 #' @export
 #' @rdname IntensityColorPlane-class
 #' @importFrom grDevices rainbow rgb
+#'
+#' @return a new \code{\linkS4class{IntensityColorPlane}} instance
 IntensityColorPlane <- function(intensity, cols=rainbow(255), alpha=1) {
   new("IntensityColorPlane", intensity=intensity, colmap=cols, alpha=alpha)
 }
@@ -21,44 +23,48 @@ IntensityColorPlane <- function(intensity, cols=rainbow(255), alpha=1) {
 
 #' DiscreteColorPlane
 #'
-#' DiscreteColorPlane constructor
+#' DiscreteColorPlane constructor taking list with names mapping to color values in hex representation.
+#' This object is used when one has a one to one mapping between discrete set of strings/values to discrete set of colors.
 #'
-#' @param values the discrete values of the color map
 #' @param lookup a "lookup table", which is a named list mapping discrete values to hex colors
-#' @param alpha a value from 0 to 1 indicating transparency level
-#' @param cmap a hex color vector
 #' @importFrom methods new
 #' @export
 #' @rdname DiscreteColorPlane-class
-DiscreteColorPlane <- function(values, lookup=NULL, alpha=1, cmap=rainbow(length(unique(values[!is.na(values)])))) {
-  values <- as.integer(values)
-  if (is.null(lookup)) {
-    valid_vals <- values[!is.na(values)]
-
-    nuniq <- length(unique(valid_vals))
-    uvals <- sort(unique(valid_vals))
-
-    if (is.null(cmap)) {
-      cmap <- rainbow(nuniq)
-    }
-
-    names(cmap) <- as.character(uvals)
-    lookup <- as.list(cmap)
+#' @return a new \code{\linkS4class{DiscreteColorPlane}} instance
+#'
+#' @examples
+#'
+#' lookup <- as.list(col2hex(c("red", "blue", "green")))
+#' names(lookup) <- c("a", "b", "c")
+#' cp <- DiscreteColorPlane(lookup)
+#'
+#' values <- c("a", "b", "c", "a", "c")
+DiscreteColorPlane <- function(lookup) {
+  if (!is.list(lookup)) {
+    stop("`lookup` must be a list from keys (as list names) --> colors (as list elements) ")
   }
+  assert_that(all(!is.null(names(lookup))), msg="`lookup` must be a named list, where the names are lookup keys")
 
-  cols <- lookup[as.character(values)]
-  cols[sapply(cols, is.null)] <- "#00000000"
-
-  new("DiscreteColorPlane", values=values, cols=cols, alpha=alpha)
+  new("DiscreteColorPlane", lookup=lookup)
 }
 
 #' RGBColorPlane
 #'
-#' RGBColorPlane constructor
+#' RGBColorPlane constructor taking a 3- or 4-column numeric \code{matrix} of RGB(A) colors in the 0-255 range.
 #'
-#' @param clr a field of colors
+#' @param clr a matrix of colors where the first column is red, second column is green, third column is blue, and optional fourth column is alpha.
 #' @export
 #' @rdname RGBColorPlane-class
+#' @return a new \code{\linkS4class{RGBColorPlane}} instance
+#' @examples
+#'
+#' rgba_cmat <- rbind(c(255,0,0,255),
+#'               c(0, 255, 0, 255),
+#'               c(0, 0, 255, 0))
+#'
+#' cp <- RGBColorPlane(rgba_cmat)
+#' stopifnot(all(cp@clr[1,] == c(255,0,0,255)))
+#'
 RGBColorPlane <- function(clr) {
   stopifnot(is.matrix(clr))
   if (ncol(clr) == 3) {
@@ -74,22 +80,26 @@ RGBColorPlane <- function(clr) {
 
 #' ConstantColorPlane
 #'
-#' ConstantColorPlane constructor
+#' ConstantColorPlane constructor taking a single hex `character` vector defining a constant color plane.
 #'
-#' @param clr a single hex color as a `character` vector
+#' @param clr a single hex color as a `character` vector of length 1 defining the constant color.
 #' @export
 #' @rdname ConstantColorPlane-class
+#' @return a new \code{\linkS4class{ConstantColorPlane}} instance
 ConstantColorPlane <- function(clr) {
   stopifnot(is.character(clr))
+  stopifnot(length(clr) == 1)
   new("ConstantColorPlane", clr=clr)
 }
 
 #' HexColorPlane
 #'
-#' HexColorPlane constructor
-#' @param clr a field of colors
+#' HexColorPlane constructor taking a `character` vector of colors to define a color plane.
+#'
+#' @param clr a vector of hex colors
 #' @export
 #' @rdname HexColorPlane-class
+#' @return a new \code{\linkS4class{HexColorPlane}} instance
 HexColorPlane <- function(clr) {
   stopifnot(is.character(clr))
   new("HexColorPlane", clr=clr)
@@ -101,20 +111,49 @@ HexColorPlane <- function(clr) {
 #' @param g the green color component
 #' @param b the blue color component
 #' @param alpha the alpha component
+#' @return a hex color represenation as `character` vector
 rgb2hex <- function(r,g,b, alpha) rgb(r, g, b, alpha, maxColorValue = 255)
+
+
+#' convert color name to hex character string
+#'
+#' @param cname one or more color names, e.g. "red"
+#' @param alpha the value of the alpha channel, ranging from 0 to 1 (default is 1)
+#' @return a vector of hex color values, one per color name
+#' @export
+col2hex <- function(cname, alpha=1) {
+  cmat <- col2rgb(cname)
+  rgb(red = cmat[1,]/255, blue=cmat[2,]/255, green=cmat[3,]/255, alpha=rep(alpha, ncol(cmat)))
+}
+
+#' @keywords internal
+#' @param rgb matrix of colors
+#' @param alpha channel
+multiply_alpha <- function(rgb, alpha) {
+  sweep(rgb, 1, alpha, "*")
+}
+
+
 
 #' @export
 #' @rdname blend_colors-methods
+#' @return a new \code{\linkS4class{ColorPlane}} instance
 setMethod("blend_colors", signature(bottom="ColorPlane", top="ColorPlane", alpha="numeric"),
           def=function(bottom, top, alpha=1) {
+            assert_that(alpha >= 0 && alpha <= 1)
+
+            bchan <- alpha_channel(bottom)
+            achan <- alpha_channel(top) * alpha
 
             rgb1 <- as_rgb(bottom)
             rgb2 <- as_rgb(top)
 
-            achan <- alpha_channel(top)
-            alpha <- achan * alpha
 
-            clr <- (1-alpha)*rgb1[,1:3,drop=FALSE] + alpha*rgb2[,1:3,drop=FALSE]
+            ao <- achan + bchan*(1-achan)
+
+            clr <- multiply_alpha(rgb2[,1:3,drop=FALSE], achan) + multiply_alpha(rgb1[,1:3,drop=FALSE], bchan * (1-achan))
+            clr <- sweep(clr, 1, ao, "/")
+            #clr <- (1-alpha)*rgb1[,1:3,drop=FALSE] + alpha*rgb2[,1:3,drop=FALSE]
             RGBColorPlane(clr)
 
           })
@@ -124,60 +163,56 @@ setMethod("blend_colors", signature(bottom="ColorPlane", top="ColorPlane", alpha
 #' @rdname blend_colors-methods
 setMethod("blend_colors", signature(bottom="ColorPlane", top="ColorPlane", alpha="missing"),
           def=function(bottom, top) {
-
-            rgb1 <- as_rgb(bottom)
-            rgb2 <- as_rgb(top)
-
-            alpha <- alpha_channel(top)
-            clr <- (1-alpha)*rgb1[,1:3,drop=FALSE] + alpha*rgb2[,1:3,drop=FALSE]
-            RGBColorPlane(clr)
-
+            callGeneric(bottom, top, alpha=1)
           })
 
 #' @export
 #' @rdname blend_colors-methods
 setMethod("blend_colors", signature(bottom="HexColorPlane", top="RGBColorPlane", alpha="numeric"),
           def=function(bottom, top, alpha) {
-            bottom <- as_rgb(bottom)
-
-            alpha <- alpha_channel(top) * alpha
+            bottom <- RGBColorPlane(as_rgb(bottom))
+            callGeneric(bottom, top, alpha)
+            #alpha <- alpha_channel(top) * alpha
             ## multiple constant alpha with alpha channel of top level
-            clr <- (1-alpha)*bottom[,1:3,drop=FALSE] + alpha*top@clr[,1:3,drop=FALSE]
-            RGBColorPlane(clr)
+            #clr <- (1-alpha)*bottom[,1:3,drop=FALSE] + alpha*top@clr[,1:3,drop=FALSE]
+            #RGBColorPlane(clr)
           })
 
 #' @export
 #' @rdname blend_colors-methods
 setMethod("blend_colors", signature(bottom="HexColorPlane", top="ConstantColorPlane", alpha="numeric"),
-          def=function(bottom, top, alpha=.5) {
-            bottom <- as_rgb(bottom)
+          def=function(bottom, top, alpha=1) {
 
-            alpha <- alpha_channel(top) * alpha
+            rgbtop <- t(replicate(length(bottom@clr), as_rgb(top), simplify=TRUE))
+
+            callGeneric(RGBColorPlane(as_rgb(bottom)), RGBColorPlane(rgbtop), alpha)
+            #alpha <- alpha_channel(top) * alpha
             ## multiple constant alpha with alpha channel of top level
-            topclr <- as_rgb(top)
-            clr <- (1-alpha)*bottom[,1:3,drop=FALSE] + matrix(rep(alpha,nrow(bottom)), nrow(bottom)) %*% topclr[,1:3,drop=FALSE]
-            RGBColorPlane(clr)
+            #topclr <- as_rgb(top)
+            #clr <- (1-alpha)*bottom[,1:3,drop=FALSE] + matrix(rep(alpha,nrow(bottom)), nrow(bottom)) %*% topclr[,1:3,drop=FALSE]
+            #RGBColorPlane(clr)
           })
 
 
 #' @export
-#' @rdname color-conversion
+#' @rdname as_rgb-methods
+#' @return a numeric matrix of rgb components
 setMethod("as_rgb", signature(x="RGBColorPlane"),
           def=function(x) x@clr)
 
 #' @export
-#' @rdname color-conversion
+#' @rdname as_rgb-methods
 setMethod("as_rgb", signature(x="HexColorPlane"),
           def=function(x) t(col2rgb(x@clr, alpha=TRUE)))
 
 #' @export
-#' @rdname color-conversion
+#' @rdname as_rgb-methods
 setMethod("as_rgb", signature(x="ConstantColorPlane"),
           def=function(x) t(col2rgb(x@clr, alpha=TRUE)))
 
 
 #' @export
-#' @rdname color-conversion
+#' @rdname as_hexcol-methods
 setMethod("as_hexcol", signature(x="RGBColorPlane"),
           def=function(x) {
             if (ncol(x@clr) == 4) {
@@ -190,13 +225,14 @@ setMethod("as_hexcol", signature(x="RGBColorPlane"),
           })
 
 #' @export
-#' @rdname color-conversion
+#' @rdname as_hexcol-methods
 setMethod("as_hexcol", signature(x="HexColorPlane"),
           def=function(x) x@clr)
 
 #' @export
 #' @param normalize divide by 255
 #' @rdname alpha_channel-methods
+#' @return a numeric vector of alpha channel values
 setMethod("alpha_channel", signature(x="HexColorPlane"),
           def=function(x, normalize=TRUE) {
             if (normalize) {
@@ -242,9 +278,23 @@ setMethod("map_colors", signature=c("ConstantColorPlane"),
 
 #' @export
 #' @rdname map_colors-methods
+setMethod("map_colors", signature=c("HexColorPlane"),
+          def=function(x) {
+            x
+          })
+
+#' @export
+#' @param values the values to map to colors via the discrete lookup table
+#' @rdname map_colors-methods
 setMethod("map_colors", signature=c("DiscreteColorPlane"),
-          def=function(x, ...) {
-            x@cols
+          def=function(x, values, ...) {
+            clrs <- as.vector(x@lookup[values])
+
+            wh <- which(sapply(clrs, is.null))
+            if (length(wh) > 0) {
+              clrs[wh] <- "000000FF"
+            }
+            new("HexColorPlane", clr=unlist(clrs))
           })
 
 

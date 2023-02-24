@@ -3,6 +3,7 @@
 \name{map_colors}
 \alias{map_colors}
 \alias{map_colors,ConstantColorPlane-method}
+\alias{map_colors,HexColorPlane-method}
 \alias{map_colors,DiscreteColorPlane-method}
 \alias{map_colors,IntensityColorPlane-method}
 \title{map data values to a set of colors}
@@ -11,7 +12,9 @@ map_colors(x, ...)
 
 \S4method{map_colors}{ConstantColorPlane}(x)
 
-\S4method{map_colors}{DiscreteColorPlane}(x, ...)
+\S4method{map_colors}{HexColorPlane}(x)
+
+\S4method{map_colors}{DiscreteColorPlane}(x, values, ...)
 
 \S4method{map_colors}{IntensityColorPlane}(x, alpha = 1, threshold = NULL, irange = NULL)
 }
@@ -20,18 +23,24 @@ map_colors(x, ...)
 
 \item{...}{extra args}
 
+\item{values}{the values to map to colors via the discrete lookup table}
+
 \item{alpha}{alpha multiplier from 0 to 1.}
 
 \item{threshold}{two-sided threshold as a 2-element vector, e.g. `threshold=c(-3,3)` indicating two-sided transparency thresholds.}
 
 \item{irange}{the intensity range defining min and max of scale.}
 }
+\value{
+a \code{HexColorPlane} instance containing the mapped colors
+}
 \description{
-map data values to a set of colors
+instantiate a vector of colors from a ColorPlane specification.
 }
 \examples{
 
 cp <- IntensityColorPlane(seq(1,100), cols=rainbow(25))
 cl <- map_colors(cp, irange=c(0,50))
 stopifnot(cl@clr[50] == rainbow(25)[25])
+
 }

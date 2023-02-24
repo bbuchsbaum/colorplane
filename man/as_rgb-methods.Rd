@@ -2,37 +2,29 @@
 % Please edit documentation in R/all_generic.R, R/color_plane.R
 \name{as_rgb}
 \alias{as_rgb}
-\alias{as_hexcol}
 \alias{as_rgb,RGBColorPlane-method}
 \alias{as_rgb,HexColorPlane-method}
 \alias{as_rgb,ConstantColorPlane-method}
-\alias{as_hexcol,RGBColorPlane-method}
-\alias{as_hexcol,HexColorPlane-method}
 \title{convert to rgb colors}
 \usage{
 as_rgb(x, ...)
-
-as_hexcol(x, ...)
 
 \S4method{as_rgb}{RGBColorPlane}(x)
 
 \S4method{as_rgb}{HexColorPlane}(x)
 
 \S4method{as_rgb}{ConstantColorPlane}(x)
-
-\S4method{as_hexcol}{RGBColorPlane}(x)
-
-\S4method{as_hexcol}{HexColorPlane}(x)
 }
 \arguments{
 \item{x}{the object to convert}
 
 \item{...}{extra args}
 }
+\value{
+a numeric matrix of rgb components
+}
 \description{
 convert to rgb colors
-
-convert to hex colors
 }
 \examples{
 cp <- IntensityColorPlane(seq(1,100), cols=rainbow(25))

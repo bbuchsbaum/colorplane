@@ -6,32 +6,29 @@
 \alias{DiscreteColorPlane}
 \title{DiscreteColorPlane}
 \usage{
-DiscreteColorPlane(
-  values,
-  lookup = NULL,
-  alpha = 1,
-  cmap = rainbow(length(unique(values[!is.na(values)])))
-)
+DiscreteColorPlane(lookup)
 }
 \arguments{
-\item{values}{the discrete values of the color map}
-
 \item{lookup}{a "lookup table", which is a named list mapping discrete values to hex colors}
-
-\item{alpha}{a value from 0 to 1 indicating transparency level}
-
-\item{cmap}{a hex color vector}
+}
+\value{
+a new \code{\linkS4class{DiscreteColorPlane}} instance
 }
 \description{
-DiscreteColorPlane constructor
+DiscreteColorPlane constructor taking list with names mapping to color values in hex representation.
+This object is used when one has a one to one mapping between discrete set of strings/values to discrete set of colors.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{values}}{a vector of discrete integer values}
-
 \item{\code{lookup}}{a lookup table mapping values to hex colors}
-
-\item{\code{alpha}}{a vector of alpha values}
 }}
 
+\examples{
+
+lookup <- as.list(col2hex(c("red", "blue", "green")))
+names(lookup) <- c("a", "b", "c")
+cp <- DiscreteColorPlane(lookup)
+
+values <- c("a", "b", "c", "a", "c")
+}

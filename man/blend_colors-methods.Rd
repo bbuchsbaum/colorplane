@@ -16,17 +16,20 @@ blend_colors(bottom, top, alpha)
 
 \S4method{blend_colors}{HexColorPlane,RGBColorPlane,numeric}(bottom, top, alpha)
 
-\S4method{blend_colors}{HexColorPlane,ConstantColorPlane,numeric}(bottom, top, alpha = 0.5)
+\S4method{blend_colors}{HexColorPlane,ConstantColorPlane,numeric}(bottom, top, alpha = 1)
 }
 \arguments{
 \item{bottom}{the bottom color plane}
 
 \item{top}{the top color plane}
 
-\item{alpha}{the alpha blending value}
+\item{alpha}{the alpha overlay value.}
+}
+\value{
+a new \code{\linkS4class{ColorPlane}} instance
 }
 \description{
-blend two color planes
+given two color planes, generate a new color plane by blending the colors using the supplied alpha multiplier.
 }
 \examples{
 
@@ -36,4 +39,5 @@ bottom <- IntensityColorPlane(1:5, cols=rev(rainbow(5)))
 top <- map_colors(top)
 bottom <- map_colors(bottom)
 bc <- blend_colors(bottom, top, .5)
+
 }
