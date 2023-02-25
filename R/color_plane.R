@@ -126,6 +126,9 @@ col2hex <- function(cname, alpha=1) {
   rgb(red = cmat[1,]/255, blue=cmat[2,]/255, green=cmat[3,]/255, alpha=rep(alpha, ncol(cmat)))
 }
 
+
+#' multiply rgb matrix with alpha channel
+
 #' @keywords internal
 #' @param rgb matrix of colors
 #' @param alpha channel
@@ -161,6 +164,7 @@ setMethod("blend_colors", signature(bottom="ColorPlane", top="ColorPlane", alpha
 
 #' @export
 #' @rdname blend_colors-methods
+#' @importFrom methods callGeneric
 setMethod("blend_colors", signature(bottom="ColorPlane", top="ColorPlane", alpha="missing"),
           def=function(bottom, top) {
             callGeneric(bottom, top, alpha=1)

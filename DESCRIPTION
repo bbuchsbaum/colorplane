@@ -7,7 +7,7 @@ Encoding: UTF-8
 Authors@R: c(
     person(c("Bradley", "R"), "Buchsbaum", role = c("aut", "cre"), email = "brad.buchsbaum@gmail.com"))
 Maintainer: Bradley R Buchsbaum <brad.buchsbaum@gmail.com>
-Description: A simple set of classes and methods for mapping between scalar intensity values and colors. There is also support for layering maps on top of one another using alpha composition using 
+Description: A simple set of classes and methods for mapping between scalar intensity values and colors. There is also support for layering maps on top of one another using alpha composition. 
 License: MIT + file LICENSE
 RoxygenNote: 7.2.3
 Imports:

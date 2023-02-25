@@ -31,6 +31,9 @@ a new \code{\linkS4class{ColorPlane}} instance
 \description{
 given two color planes, generate a new color plane by blending the colors using the supplied alpha multiplier.
 }
+\details{
+The functions in this package blend colors based on the "over" operator where `top` if foreground and `bottom` is background.
+}
 \examples{
 
 top <- IntensityColorPlane(1:5, cols=rainbow(5))
@@ -39,5 +42,7 @@ bottom <- IntensityColorPlane(1:5, cols=rev(rainbow(5)))
 top <- map_colors(top)
 bottom <- map_colors(bottom)
 bc <- blend_colors(bottom, top, .5)
-
+}
+\references{
+https://en.wikipedia.org/wiki/Alpha_compositing
 }
