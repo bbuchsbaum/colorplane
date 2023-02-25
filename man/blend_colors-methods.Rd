@@ -26,7 +26,7 @@ blend_colors(bottom, top, alpha)
 \item{alpha}{the alpha overlay value.}
 }
 \value{
-a new \code{\linkS4class{ColorPlane}} instance
+a new \code{\linkS4class{ColorPlane}} instance with `top` and `bottom` alpha-blended.
 }
 \description{
 given two color planes, generate a new color plane by blending the colors using the supplied alpha multiplier.

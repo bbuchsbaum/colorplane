@@ -140,7 +140,7 @@ multiply_alpha <- function(rgb, alpha) {
 
 #' @export
 #' @rdname blend_colors-methods
-#' @return a new \code{\linkS4class{ColorPlane}} instance
+#' @return a new \code{\linkS4class{ColorPlane}} instance with `top` and `bottom` alpha-blended.
 setMethod("blend_colors", signature(bottom="ColorPlane", top="ColorPlane", alpha="numeric"),
           def=function(bottom, top, alpha=1) {
             assert_that(alpha >= 0 && alpha <= 1)

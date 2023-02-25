@@ -8,6 +8,8 @@
 #' @param bottom the bottom color plane
 #' @param top the top color plane
 #' @param alpha the alpha overlay value.
+#'
+#'
 #' @export
 #' @rdname blend_colors-methods
 #'
@@ -77,6 +79,7 @@ setGeneric(name="as_hexcol", def=function(x, ...) standardGeneric("as_hexcol"))
 #'
 #' @param x the object to extract alpha channel from
 #' @param ... extra args
+#'
 #' @export
 #' @rdname alpha_channel-methods
 #' @examples
