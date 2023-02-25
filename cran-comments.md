@@ -1,12 +1,9 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* Converted the DESCRIPTION title to title case.
+* Added "Value" fields to all functions
 
-* moved mispelled word from DESCRIPTION
-
-* resolved disrepancy between Author and Maintainer.
-
+* I added a reference to the Wikipedia "Alpha Compositing" page in the "blend_colors" function under "References". I thought this was a more appropriate place for the reference that in the Description. There are no real algorithms or formal methods requiring citation in this package.
 
 ## R CMD check results
 
