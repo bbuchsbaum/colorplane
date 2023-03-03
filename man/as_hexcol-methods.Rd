@@ -17,6 +17,12 @@ as_hexcol(x, ...)
 
 \item{...}{extra args}
 }
+\value{
+a character vector of ex colors
+}
 \description{
 convert to hex colors
+}
+\seealso{
+\link{rgb}
 }

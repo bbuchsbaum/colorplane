@@ -71,6 +71,9 @@ setGeneric(name="as_rgb", def=function(x, ...) standardGeneric("as_rgb"))
 #' @param ... extra args
 #' @rdname as_hexcol-methods
 #' @export
+#'
+#' @return a character vector of ex colors
+#' @seealso \link{rgb}
 setGeneric(name="as_hexcol", def=function(x, ...) standardGeneric("as_hexcol"))
 
 #' alpha_channel
