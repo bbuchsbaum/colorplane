@@ -10,6 +10,8 @@ Maintainer: Bradley R Buchsbaum <brad.buchsbaum@gmail.com>
 Description: A simple set of classes and methods for mapping between scalar intensity values and colors. There is also support for layering maps on top of one another using alpha composition. 
 License: MIT + file LICENSE
 RoxygenNote: 7.2.3
+URL: https://github.com/bbuchsbaum/colorplane
+BugReports: https://github.com/bbuchsbaum/colorplane/issues
 Imports:
   assertthat,
   methods
