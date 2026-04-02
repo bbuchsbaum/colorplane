@@ -10,3 +10,4 @@ docs
 ^repomix-output\.xml$
 ^\.Rhistory$
 ^\.\.Rcheck$
+^\.rcmdcheck_result\.rds$
