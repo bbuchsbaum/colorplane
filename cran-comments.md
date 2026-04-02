@@ -1,20 +1,24 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* Added "Value" fields to all functions
-
-* I added a reference to the Wikipedia "Alpha Compositing" page in the "blend_colors" function under "References". I thought this was a more appropriate place for the reference that in the Description. The contribution of this package is mainly in the data structures. There are no real algorithms or formal methods requiring citation in this package, with the exception of the alpha blending functionality ("over" rule), which is at this point standard computer graphics.
-
-https://en.wikipedia.org/wiki/Alpha_compositing
+* fixed alpha compositing in `blend_colors()` so composite alpha is preserved
+  correctly and fully transparent blends remain finite
+* fixed `map_colors()` for zero-width intensity ranges, all-missing intensity
+  vectors, and scalar or per-element alpha handling
+* added regression tests covering the corrected blending and color-mapping edge
+  cases
+* refreshed package metadata and regenerated the Rd/pkgdown documentation to
+  match the current API
 
 ## R CMD check results
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
-R CMD check succeeded
+The package was checked with:
 
-* This is a new release.
+* `env LC_ALL=en_CA.UTF-8 R CMD build .`
+* `env LC_ALL=en_CA.UTF-8 R CMD check --no-manual colorplane_0.6.1.tar.gz`
 
 ## Downstream dependencies
 
-no downstream dependencies
+No downstream dependencies.

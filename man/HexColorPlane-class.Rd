@@ -17,3 +17,9 @@ a new \code{\linkS4class{HexColorPlane}} instance
 \description{
 HexColorPlane constructor taking a `character` vector of colors to define a color plane.
 }
+\section{Slots}{
+
+\describe{
+\item{\code{clr}}{a character vector of hex color codes}
+}}
+

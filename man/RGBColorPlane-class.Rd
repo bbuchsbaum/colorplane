@@ -17,6 +17,12 @@ a new \code{\linkS4class{RGBColorPlane}} instance
 \description{
 RGBColorPlane constructor taking a 3- or 4-column numeric \code{matrix} of RGB(A) colors in the 0-255 range.
 }
+\section{Slots}{
+
+\describe{
+\item{\code{clr}}{a numeric matrix of RGBA color values}
+}}
+
 \examples{
 
 rgba_cmat <- rbind(c(255,0,0,255),

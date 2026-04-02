@@ -13,7 +13,7 @@ IntensityColorPlane(intensity, cols = rainbow(255), alpha = 1)
 
 \item{cols}{a vector of hex character codes}
 
-\item{alpha}{a vector of alpha values ranging from 0 to 1}
+\item{alpha}{a scalar alpha value or a vector of alpha values ranging from 0 to 1}
 }
 \value{
 a new \code{\linkS4class{IntensityColorPlane}} instance

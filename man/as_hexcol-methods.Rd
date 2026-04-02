@@ -18,7 +18,7 @@ as_hexcol(x, ...)
 \item{...}{extra args}
 }
 \value{
-a character vector of ex colors
+a character vector of hex colors
 }
 \description{
 convert to hex colors

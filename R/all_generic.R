@@ -49,7 +49,7 @@ setGeneric(name="blend_colors", def=function(bottom, top, alpha) standardGeneric
 #' cl <- map_colors(cp, irange=c(0,50))
 #' stopifnot(cl@clr[50] == rainbow(25)[25])
 #'
-#' @return a \code{HexColorPlane} instance containing the mapped colors
+#' @return a \code{HexColorPlane} or \code{RGBColorPlane} instance containing the mapped colors
 setGeneric(name="map_colors", def=function(x, ...) standardGeneric("map_colors"))
 
 
@@ -72,7 +72,7 @@ setGeneric(name="as_rgb", def=function(x, ...) standardGeneric("as_rgb"))
 #' @rdname as_hexcol-methods
 #' @export
 #'
-#' @return a character vector of ex colors
+#' @return a character vector of hex colors
 #' @seealso \link{rgb}
 setGeneric(name="as_hexcol", def=function(x, ...) standardGeneric("as_hexcol"))
 
@@ -91,16 +91,4 @@ setGeneric(name="as_hexcol", def=function(x, ...) standardGeneric("as_hexcol"))
 #' stopifnot(length(alpha_channel(cl)) == 5)
 setGeneric(name="alpha_channel", def=function(x, ...) standardGeneric("alpha_channel"))
 
-
-#' get_color
-#'
-#' get the color associated with one or more values
-#'
-#' @param x the color lookup table
-#' @param v the intensity value(s)
-#' @param ... extra args
-#' @export
-#' @rdname get_color-methods
-#' @return a color value
-setGeneric(name="get_color", def=function(x, v, ...) standardGeneric("get_color"))
 

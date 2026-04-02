@@ -3,6 +3,66 @@
 NULL
 
 
+# Validate scalar or per-element alpha inputs and normalize to one value per color.
+normalize_alpha_values <- function(alpha, n, arg = "alpha") {
+  if (!is.numeric(alpha)) {
+    stop(sprintf("`%s` must be numeric", arg), call. = FALSE)
+  }
+
+  if (!(length(alpha) %in% c(1L, n))) {
+    stop(sprintf("`%s` must have length 1 or %d", arg, n), call. = FALSE)
+  }
+
+  if (anyNA(alpha) || any(!is.finite(alpha))) {
+    stop(sprintf("`%s` must be finite and non-missing", arg), call. = FALSE)
+  }
+
+  if (any(alpha < 0 | alpha > 1)) {
+    stop(sprintf("`%s` must be between 0 and 1", arg), call. = FALSE)
+  }
+
+  if (length(alpha) == 1L) {
+    rep(alpha, n)
+  } else {
+    alpha
+  }
+}
+
+
+# Map intensities onto color-map indices, including degenerate zero-width ranges.
+map_intensity_indices <- function(intensity, irange, n_colors) {
+  idx <- rep.int(NA_integer_, length(intensity))
+  keep <- !is.na(intensity)
+
+  if (!any(keep)) {
+    return(idx)
+  }
+
+  if (!is.numeric(irange) || length(irange) != 2L || anyNA(irange) || any(!is.finite(irange))) {
+    stop("`irange` must be a finite numeric vector of length 2", call. = FALSE)
+  }
+
+  if (irange[2] < irange[1]) {
+    stop("`irange[2]` must be greater than or equal to `irange[1]`", call. = FALSE)
+  }
+
+  span <- diff(irange)
+
+  if (span == 0) {
+    midpoint <- as.integer((n_colors + 1L) %/% 2L)
+    idx[keep & intensity < irange[1]] <- 1L
+    idx[keep & intensity > irange[2]] <- n_colors
+    idx[keep & intensity == irange[1]] <- midpoint
+    return(idx)
+  }
+
+  idx[keep] <- as.integer((intensity[keep] - irange[1]) / span * (n_colors - 1L) + 1L)
+  idx[idx < 1L] <- 1L
+  idx[idx > n_colors] <- n_colors
+  idx
+}
+
+
 
 #' IntensityColorPlane
 #'
@@ -10,13 +70,19 @@ NULL
 #'
 #' @param intensity a numeric vector of intensity values
 #' @param cols a vector of hex character codes
-#' @param alpha a vector of alpha values ranging from 0 to 1
+#' @param alpha a scalar alpha value or a vector of alpha values ranging from 0 to 1
 #' @export
 #' @rdname IntensityColorPlane-class
 #' @importFrom grDevices rainbow rgb
 #'
 #' @return a new \code{\linkS4class{IntensityColorPlane}} instance
 IntensityColorPlane <- function(intensity, cols=rainbow(255), alpha=1) {
+  stopifnot(is.numeric(intensity))
+  stopifnot(is.character(cols))
+  if (length(cols) == 0) {
+    stop("`cols` must contain at least one color", call. = FALSE)
+  }
+  normalize_alpha_values(alpha, length(intensity))
   new("IntensityColorPlane", intensity=intensity, colmap=cols, alpha=alpha)
 }
 
@@ -123,7 +189,7 @@ rgb2hex <- function(r,g,b, alpha) rgb(r, g, b, alpha, maxColorValue = 255)
 #' @export
 col2hex <- function(cname, alpha=1) {
   cmat <- col2rgb(cname)
-  rgb(red = cmat[1,]/255, blue=cmat[2,]/255, green=cmat[3,]/255, alpha=rep(alpha, ncol(cmat)))
+  rgb(red = cmat[1,]/255, green=cmat[2,]/255, blue=cmat[3,]/255, alpha=rep(alpha, ncol(cmat)))
 }
 
 
@@ -143,7 +209,7 @@ multiply_alpha <- function(rgb, alpha) {
 #' @return a new \code{\linkS4class{ColorPlane}} instance with `top` and `bottom` alpha-blended.
 setMethod("blend_colors", signature(bottom="ColorPlane", top="ColorPlane", alpha="numeric"),
           def=function(bottom, top, alpha=1) {
-            assert_that(alpha >= 0 && alpha <= 1)
+            alpha <- normalize_alpha_values(alpha, 1L)
 
             bchan <- alpha_channel(bottom)
             achan <- alpha_channel(top) * alpha
@@ -151,12 +217,17 @@ setMethod("blend_colors", signature(bottom="ColorPlane", top="ColorPlane", alpha
             rgb1 <- as_rgb(bottom)
             rgb2 <- as_rgb(top)
 
+            assert_that(nrow(rgb1) == nrow(rgb2), msg="`bottom` and `top` must resolve to the same number of colors")
 
             ao <- achan + bchan*(1-achan)
+            premult <- multiply_alpha(rgb2[,1:3,drop=FALSE], achan) +
+              multiply_alpha(rgb1[,1:3,drop=FALSE], bchan * (1-achan))
 
-            clr <- multiply_alpha(rgb2[,1:3,drop=FALSE], achan) + multiply_alpha(rgb1[,1:3,drop=FALSE], bchan * (1-achan))
-            clr <- sweep(clr, 1, ao, "/")
-            #clr <- (1-alpha)*rgb1[,1:3,drop=FALSE] + alpha*rgb2[,1:3,drop=FALSE]
+            clr <- cbind(matrix(0, nrow=nrow(rgb1), ncol=3), ao * 255)
+            keep <- ao > 0
+            if (any(keep)) {
+              clr[keep,1:3] <- sweep(premult[keep,,drop=FALSE], 1, ao[keep], "/")
+            }
             RGBColorPlane(clr)
 
           })
@@ -294,9 +365,9 @@ setMethod("map_colors", signature=c("DiscreteColorPlane"),
           def=function(x, values, ...) {
             clrs <- as.vector(x@lookup[values])
 
-            wh <- which(sapply(clrs, is.null))
+            wh <- which(vapply(clrs, is.null, logical(1)))
             if (length(wh) > 0) {
-              clrs[wh] <- "000000FF"
+              clrs[wh] <- "#00000000"
             }
             new("HexColorPlane", clr=unlist(clrs))
           })
@@ -306,51 +377,57 @@ setMethod("map_colors", signature=c("DiscreteColorPlane"),
 #' @importFrom grDevices col2rgb
 #' @import assertthat
 #' @rdname map_colors-methods
-#' @param alpha alpha multiplier from 0 to 1.
+#' @param alpha alpha multiplier from 0 to 1. Can be scalar or length \code{length(x@intensity)}.
+#'   If NULL, uses the alpha value stored in the object.
 #' @param threshold two-sided threshold as a 2-element vector, e.g. `threshold=c(-3,3)` indicating two-sided transparency thresholds.
 #' @param irange the intensity range defining min and max of scale.
 setMethod("map_colors", signature=c("IntensityColorPlane"),
-          def=function(x, alpha=1, threshold=NULL, irange=NULL) {
-            assertthat::assert_that(alpha >=0 && alpha <= 1)
-            if (is.null(irange)) {
-              irange <- range(x@intensity, na.rm=TRUE)
-              clr <- x@colmap[as.integer((x@intensity - irange[1])/ diff(irange) * (length(x@colmap) -1) + 1)]
-              clr[is.na(clr)] <- "#00000000"
-            } else {
-              assertthat::assert_that(irange[2] >= irange[1])
-              full_range <- range(x@intensity, na.rm=TRUE)
-              #irange <- c(max(irange[1], full_range[1]), min(irange[2], full_range[2]))
-              icol <- as.integer((x@intensity - irange[1])/diff(irange) * (length(x@colmap) -1) + 1)
-              icol[icol < 1] <- 1
-              icol[icol > length(x@colmap)] <- length(x@colmap)
-              clr <- x@colmap[icol]
-              clr[is.na(icol)] <- "#00000000"
-              clr
+          def=function(x, alpha=NULL, threshold=NULL, irange=NULL) {
+            if (is.null(alpha)) {
+              alpha <- x@alpha
             }
 
+            alpha <- normalize_alpha_values(alpha, length(x@intensity))
 
+            if (is.null(irange)) {
+              keep <- !is.na(x@intensity)
+              if (any(keep)) {
+                irange <- range(x@intensity[keep])
+              }
+            }
+
+            if (is.null(irange)) {
+              icol <- rep.int(NA_integer_, length(x@intensity))
+            } else {
+              icol <- map_intensity_indices(x@intensity, irange, length(x@colmap))
+            }
+
+            clr <- x@colmap[icol]
+            clr[is.na(icol)] <- "#00000000"
 
             if (!is.null(threshold)) {
               clr <- col2rgb(clr, alpha=TRUE)
-              if (alpha < 1) {
-                clr[4,] <- clr[4,] * alpha
-              }
+              clr[4,] <- clr[4,] * alpha
               if (length(threshold) == 1) {
                 trans <- x@intensity < threshold
-                clr[4,trans] <- 0
-
               } else if (length(threshold) == 2) {
-                #cat("thresholding ", threshold)
                 trans <- x@intensity > threshold[1] & x@intensity < threshold[2]
-                clr[4,trans] <- 0
               } else {
                 stop("threshold must be a numeric vector with 1 or 2 elements")
               }
 
+              trans[is.na(trans)] <- FALSE
+              clr[4,trans] <- 0
               new("RGBColorPlane", clr=t(clr))
 
             } else {
+              if (any(alpha != 1)) {
+                clr <- col2rgb(clr, alpha=TRUE)
+                clr[4,] <- clr[4,] * alpha
+                new("HexColorPlane", clr=rgb2hex(clr[1,], clr[2,], clr[3,], clr[4,]))
+              } else {
               new("HexColorPlane", clr=clr)
+              }
             }
 
 

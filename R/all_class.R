@@ -34,7 +34,7 @@ setClass("ColorPlane", representation(clr="ANY"), contains="BaseColorPlane")
 
 #' HexColorPlane
 #'
-#' @inheritParams ColorPlane
+#' @slot clr a character vector of hex color codes
 #' @export
 #' @rdname HexColorPlane-class
 setClass("HexColorPlane", representation(clr="character"), contains="ColorPlane")
@@ -42,14 +42,13 @@ setClass("HexColorPlane", representation(clr="character"), contains="ColorPlane"
 
 #' RGBColorPlane
 #'
-#' @inheritParams ColorPlane
+#' @slot clr a numeric matrix of RGBA color values
 #' @export
 #' @rdname RGBColorPlane-class
 setClass("RGBColorPlane", representation(clr="matrix"), contains="ColorPlane")
 
 #' ConstantColorPlane
 #'
-#' @inheritParams ColorPlane
 #' @slot clr the constant color as hex value
 #' @export
 #' @rdname ConstantColorPlane-class
@@ -59,14 +58,6 @@ setClass("RGBColorPlane", representation(clr="matrix"), contains="ColorPlane")
 setClass("ConstantColorPlane", representation(clr="character"), contains="ColorPlane")
 
 
-#' ColorScale
-#'
-#' @slot irange the intensity range of the scale
-#' @slot threshold the alpha thresholding range
-#' @slot clr a vector of hex colors
-#' @export
-#' @rdname ColorScale-class
-setClass("ColorScale", representation(irange="numeric", threshold="numeric", clr="character"))
 
 
 

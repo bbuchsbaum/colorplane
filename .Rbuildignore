@@ -6,3 +6,7 @@
 ^cran-comments\.md$
 docs
 ^CRAN-SUBMISSION$
+^\.claude$
+^repomix-output\.xml$
+^\.Rhistory$
+^\.\.Rcheck$
